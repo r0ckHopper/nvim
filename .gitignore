@@ -1,0 +1,19 @@
+# Swap/backup files
+*.swp
+*.swo
+*.swn
+*~
+
+# Neovim auto-save
+.*.swp
+.*.swo
+.*.swn
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
