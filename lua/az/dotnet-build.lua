@@ -12,7 +12,7 @@ local function adb_flag()
 end
 
 local function dotnet_build()
-	vim.cmd("FloatermNew --position=bottomright --width=0.5 --height=0.3 dotnet build -f net10.0-android -p:Configuration=Debug " .. adb_flag())
+	vim.cmd("FloatermNew --position=bottomright --width=0.5 --height=0.3 --autoclose=0 dotnet build -f net10.0-android -p:Configuration=Debug " .. adb_flag())
 	vim.schedule(function()
 		vim.api.nvim_feedkeys(
 			vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, true, true),
@@ -23,7 +23,7 @@ local function dotnet_build()
 end
 
 local function dotnet_run()
-	vim.cmd("FloatermNew --position=bottomright --width=0.5 --height=0.3 dotnet build -t:Run -f net10.0-android -p:Configuration=Debug"
+	vim.cmd("FloatermNew --position=bottomright --width=0.5 --height=0.3 --autoclose=0 dotnet build -t:Run -f net10.0-android -p:Configuration=Debug"
 		.. " -p:AndroidAttachDebugger=true -p:AndroidSdbTargetPort=50703 -p:AndroidSdbHostPort=50703 "
 		.. adb_flag())
 	vim.schedule(function()
@@ -36,7 +36,7 @@ local function dotnet_run()
 end
 
 local function dotnet_clean()
-	vim.cmd("FloatermNew --position=bottomright --width=0.5 --height=0.3 dotnet clean -f net10.0-android -p:Configuration=Debug " .. adb_flag())
+	vim.cmd("FloatermNew --position=bottomright --width=0.5 --height=0.3 --autoclose=0 dotnet clean -f net10.0-android -p:Configuration=Debug " .. adb_flag())
 	vim.schedule(function()
 		vim.api.nvim_feedkeys(
 			vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, true, true),

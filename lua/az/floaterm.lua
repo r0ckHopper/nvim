@@ -2,6 +2,8 @@ vim.pack.add({
 	"https://github.com/voldikss/vim-floaterm"
 })
 
+vim.g.floaterm_position = 'bottomright'
+
 vim.keymap.set("n", "<leader>t",":FloatermToggle<CR>")
 --vim.keymap.set("t", "<C-w><C-q>","<C-\\><C-n>:FloatermHide<CR>")
 --vim.keymap.set("t", "<C-w>q","<C-\\><C-n>:FloatermHide<CR>") --double binding hide terminal to mimic ^W q functionalityfloa
