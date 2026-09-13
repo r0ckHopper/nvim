@@ -1,7 +1,18 @@
 vim.pack.add({
 	"https://github.com/tpope/vim-fugitive"
 })
-vim.keymap.set('n', "<leader>gg", ':G | only<CR>'); 
+vim.keymap.set('n', "<leader>gg", ':G | only<CR>');
+
+-- Populate quickfix with all unstaged file paths
+vim.keymap.set('n', '<leader>gU', function()
+  local files = vim.fn.systemlist('git diff --name-only')
+  if vim.tbl_isempty(files) then
+    vim.notify('No unstaged changes', vim.log.levels.INFO)
+    return
+  end
+  vim.fn.setqflist({}, ' ', { title = 'Unstaged Files', lines = files })
+  vim.cmd('cwindow')
+end, { desc = 'Fugitive: unstaged files into quickfix' })
 
 --fugitiveHeader xxx links to Label
 --fugitiveHash   xxx links to Identifier

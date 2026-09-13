@@ -37,7 +37,6 @@ local function ensure_hl()
   end
   hl_defined = true
   vim.api.nvim_set_hl(0, "OpencodePermSelected", { link = "Visual", default = true })
-  vim.api.nvim_set_hl(0, "OpencodePermTitle", { link = "Title", default = true })
   vim.api.nvim_set_hl(0, "OpencodePermBorderFocus", { link = "Special", default = true })
   vim.api.nvim_set_hl(0, "OpencodePermBorderNormal", { link = "Comment", default = true })
 end
@@ -144,9 +143,9 @@ local function render(lines)
   local w = state.width
   pad_lines(lines, w)
 
-  vim.api.nvim_buf_set_option(state.buf, "modifiable", true)
+  vim.bo[state.buf].modifiable = true
   vim.api.nvim_buf_set_lines(state.buf, 0, -1, false, lines)
-  vim.api.nvim_buf_set_option(state.buf, "modifiable", false)
+  vim.bo[state.buf].modifiable = false
 
   vim.api.nvim_buf_clear_namespace(state.buf, NS, 0, -1)
 
@@ -158,7 +157,7 @@ local function render(lines)
       local s, _ = line:find(vim.pesc(btn), col)
       if s then
         if opt_idx == selected then
-          vim.api.nvim_buf_add_highlight(state.buf, NS, "OpencodePermSelected", line_idx - 1, s - 1, s - 1 + #btn)
+          vim.api.nvim_buf_set_extmark(state.buf, NS, line_idx - 1, s - 1, { hl_group = "OpencodePermSelected", end_col = s - 1 + #btn })
         end
         col = s + #btn
       end
@@ -209,8 +208,8 @@ end
 
 local function setup_keymaps(buf)
   local function map(lhs, callback, desc)
-    vim.api.nvim_buf_set_keymap(buf, "n", lhs, "", {
-      callback = callback,
+    vim.keymap.set("n", lhs, callback, {
+      buffer = buf,
       nowait = true,
       desc = desc,
     })

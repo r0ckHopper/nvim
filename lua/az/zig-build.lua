@@ -1,6 +1,16 @@
 local M = {}
 
 -- Build commands for Zig
+local function zig_build_run()
+	vim.cmd("FloatermNew --position=bottomright --width=0.5 --height=0.3 --autoclose=0 --autoclose=0 zig build run -Doptimize=Debug")
+	vim.schedule(function()
+		vim.api.nvim_feedkeys(
+			vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, true, true),
+			"n",
+			false
+		)
+	end)
+end
 local function zig_build()
 	vim.cmd("FloatermNew --position=bottomright --width=0.5 --height=0.3 --autoclose=0 --autoclose=0 zig build -Doptimize=Debug")
 	vim.schedule(function()
@@ -74,7 +84,8 @@ function M.setup_buffer()
 	local rebuild_opts = { buffer = true, desc = "Zig: Rebuild project" }
 	local clean_opts = { buffer = true, desc = "Zig: Clean rebuild" }
 
-	vim.keymap.set("n", "<leader>zb", zig_build, opts)
+	vim.keymap.set("n", "<leader>zbb", zig_build, opts)
+	vim.keymap.set("n", "<leader>zbr", zig_build_run, opts)
 	vim.keymap.set("n", "<leader>zr", zig_rebuild, rebuild_opts)
 	vim.keymap.set("n", "<leader>zc", zig_clean_rebuild, clean_opts)
 end

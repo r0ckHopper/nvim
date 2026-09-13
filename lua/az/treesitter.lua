@@ -2,9 +2,13 @@ vim.pack.add({
 	"https://github.com/nvim-treesitter/nvim-treesitter",
 })
 
+vim.cmd('packadd nvim-treesitter')
+vim.opt.rtp:append(vim.fn.stdpath('data') .. '/site/pack/core/opt/nvim-treesitter/runtime')
+
 require'nvim-treesitter'.setup{
 
-	install_dir = vim.fn.stdpath('data') .. '/site'
+	install_dir = vim.fn.stdpath('data') .. '/site',
+	indent = { enable = true },
 }
 
 require'nvim-treesitter'.install { 'zig', 'lua' , 'glsl'}
@@ -18,21 +22,3 @@ vim.api.nvim_create_autocmd('FileType', {
 		vim.treesitter.start()
 	end,
 })
-
----- 4️⃣ Folding: enable Treesitter-based folding
---vim.api.nvim_create_autocmd('FileType', {
---  pattern = { 'lua', 'zig', 'sc' },
---  callback = function()
---    vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
---    vim.wo[0][0].foldmethod = 'expr'
---  end,
---})
-
--- 5️⃣ Indentation: enable Treesitter-based indentation
-vim.api.nvim_create_autocmd('FileType', {
-	pattern = { 'lua', 'zig', 'sc' },
-	callback = function()
-		vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-	end,
-})
-

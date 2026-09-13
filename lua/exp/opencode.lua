@@ -1,9 +1,10 @@
 -- edit popup test v2
 vim.pack.add({
-	"https://github.com/nickjvandyke/opencode.nvim",
-	"https://github.com/folke/snacks.nvim"
+--	"https://github.com/nickjvandyke/opencode.nvim",
+	"https://github.com/folke/snacks.nvim",
+	"file:///home/akhursheed/source/opencode.nvim"
 })
-
+--
 require("snacks").setup({
   input = {
     enabled = true, -- Enhances `ask()`
@@ -37,41 +38,30 @@ vim.g.opencode_opts = {
 	lsp = {
 		enabled = true,
 	},
+	events = {
+		permissions = {
+			floating = true,
+		},
+	},
 }
--- Monkey-patch the permission handler: hello
---   - bash/tool/other → non-intrusive floating window (h/l navigation)
---   - edit           → normal diff UI (da/dr keymaps, handled by orig)
 
-vim.schedule(function()
-	local perm = require("opencode.events.permissions")
-	local orig = perm.request
-	perm.request = function(event, server)
-		require("exp.opencode-permissions").handle(event, server)
-		if not (event.type == "permission.asked" and event.properties.permission ~= "edit") then
-			orig(event, server)
-		end
-	end
-end)
--- Remote-control the permission floating window without C-w w into it
-vim.keymap.set("n", "<C-h>", function()
-require("exp.opencode-permissions").move_left()
-end, { desc = "Permission: select left" })
-vim.keymap.set("n", "<C-l>", function()
-require("exp.opencode-permissions").move_right()
-end, { desc = "Permission: select right" })
-vim.keymap.set("n", "<leader><CR>", function()
-require("exp.opencode-permissions").confirm()
-end, { desc = "Permission: confirm" })
-vim.keymap.set("n", "<C-n>", function()
-require("exp.opencode-permissions").next_permission()
-end, { desc = "Permission: next request" })
-vim.keymap.set("n", "<C-p>", function()
-require("exp.opencode-permissions").prev_permission()
-end, { desc = "Permission: prev request" })
-vim.keymap.set("n", "<leader>op", function()
-require("exp.opencode-permissions").toggle()
-end, { desc = "Toggle permission window" })
---]]
+--vim.schedule(function()
+--	local perm = require("opencode.events.permissions")
+--	local orig = perm.request
+--	perm.request = function(event, server)
+--		require("exp.opencode-permissions").handle(event, server)
+--		if not (event.type == "permission.asked" and event.properties.permission ~= "edit") then
+--			orig(event, server)
+--		end
+--	end
+--end)
+-- 
+vim.keymap.set({ "n", "v", "i" }, "<C-h>", function() require("opencode.events.permissions.floating").move_left() end, { desc = "Permission: select left" })
+vim.keymap.set({ "n", "v", "i" }, "<C-l>", function() require("opencode.events.permissions.floating").move_right() end, { desc = "Permission: select right" })
+vim.keymap.set({ "n", "v", "i" }, "<C-n>", function() require("opencode.events.permissions.floating").next_permission() end, { desc = "Permission: next request" })
+vim.keymap.set({ "n", "v", "i" }, "<C-p>", function() require("opencode.events.permissions.floating").prev_permission() end, { desc = "Permission: prev request" })
+vim.keymap.set("n", "<C-CR>", function() require("opencode.events.permissions.floating").confirm() end, { desc = "Permission: confirm" })
+vim.keymap.set("n", "<leader>op", function() require("opencode.events.permissions.floating").toggle() end, { desc = "Toggle permission window" })
 
 
 
@@ -84,10 +74,12 @@ vim.keymap.set("n",          "goo", function() return require("opencode").operat
 
 vim.keymap.set("n", "<C-k>", function() require("opencode").command("session.half.page.up") end,   { desc = "Scroll opencode up" })
 vim.keymap.set("n", "<C-j>", function() require("opencode").command("session.half.page.down") end, { desc = "Scroll opencode down" })
+vim.keymap.set("n", "<C-S-k>", function() require("opencode").command("session.message.previous") end,   { desc = "Scroll opencode up" })
+vim.keymap.set("n", "<C-S-j>", function() require("opencode").command("session.message.next") end, { desc = "Scroll opencode down" })
 
 -- You may want these if you use the opinionated `<C-a>` and `<C-x>` keymaps above
---vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
---vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement under cursor", noremap = true })
+vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
+vim.keymap.set("n", "_", "<C-x>", { desc = "Decrement under cursor", noremap = true })
 
 -- Check for file changes when OpenCode finishes a response, even if it used
 -- bash/sed/etc. (the built-in reload handler only checks on OpencodeEvent:file.edited)

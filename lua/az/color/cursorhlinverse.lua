@@ -1,4 +1,4 @@
-local cursor_default_bg = '#ffff00'
+local cursor_default_bg = '#00ff00'
 local cursor_default_fg = '#00ff00'
 
 local function set_colors()
@@ -7,7 +7,7 @@ local function set_colors()
 		fg = cursor_default_fg,
 	})
 	vim.api.nvim_set_hl(0, 'CursorLine', {
-		bg = NONE,
+		bg = '#000099',
 	})
 	vim.api.nvim_set_hl(0, 'CursorLineNr', {
 		bg = NONE,

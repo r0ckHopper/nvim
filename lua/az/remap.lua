@@ -1,7 +1,5 @@
-vim.g.loaded_matchit = 1
 local map = vim.keymap.set
 vim.g.mapleader = " "
-
 --help in new tab command
 map("n", "<leader>h", ":tab help ", { desc = 'help in new tab command'})
 
@@ -25,11 +23,40 @@ map({'n', 'v'}, '<leader>y', '"+y', { desc = 'yank to clipboard'})
 map({'n', 'v'}, '<leader>Y', '"+y', { desc = 'yank to clipboard'})
 map('n', '<leader>Y', '"+Y', { desc = 'yank line to clipboard'})
 map({'n', 'v'}, '<leader>d', '"_d', { desc = 'Delete to void'})
+-- Yank line diagnostics (default register, like y)
+map("n", "yd", function()
+  local diags = vim.diagnostic.get(0, { lnum = vim.fn.line(".") - 1 })
+  if #diags == 0 then
+    vim.notify("No diagnostics on this line", vim.log.levels.WARN)
+    return
+  end
+  local lines = vim.iter(diags):map(function(d) return d.message end):totable()
+  local text = table.concat(lines, "\n")
+  vim.fn.setreg('"', text)  -- default register
+  vim.notify("Yanked " .. #diags .. " diagnostic(s)")
+end, { desc = "yank line diagnostics (default register)" })
+
+-- Yank line diagnostics to system clipboard via "+yd
+map("o", "d", function()
+  if vim.v.operator == 'y' and vim.v.register == '+' then
+    local diags = vim.diagnostic.get(0, { lnum = vim.fn.line(".") - 1 })
+    if #diags == 0 then
+      vim.notify("No diagnostics on this line", vim.log.levels.WARN)
+    else
+      local lines = vim.iter(diags):map(function(d) return d.message end):totable()
+      vim.fn.setreg("+", table.concat(lines, "\n"))
+      vim.notify("Yanked " .. #diags .. " diagnostic(s) to clipboard")
+    end
+    return '<Esc>'
+  end
+  return 'd'
+end, { expr = true, desc = "yank line diagnostics to clipboard (+yd)" })
+
 
 -- LSP keybindings
 map("n", "gd", vim.lsp.buf.definition)
 map("n", "gD", vim.lsp.buf.declaration)
-map("n", "gR", function() 
+map("n", "gR", function()
   require('telescope.builtin').lsp_references(require('telescope.themes').get_cursor({
     jump_type = "never",  -- Don't auto-jump on open
     show_line = true,     -- Show line numbers
@@ -42,18 +69,6 @@ map("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 -- map leader v to split with command
 map("n", "<leader>v", ":vsplit ", { desc = "vertical split" })
-
--- movement focus centering cursor
-map({'n', 'v'}, "k", "kzz")
-map({'n', 'v'}, "j", "jzz")
-map("n", "G", "Gzz")
-map("n", "<C-d>", "<C-d>zz")
-map("n", "<C-u>", "<C-u>zz")
-map("n", "n", "nzz") 
-map("n", "<S-n>", "<S-n>zz")
-map("n", "%", "%zz" )-- only works if you do -> vim.g.loaded_matchit = 1
-map("n", "]]", "]]zz")--not working 
-map("n", "[[", "[[zz")--not working
 
 -- run commands in file to terminal
 --map('n', '<leader>r', ':.w !bash<CR>', { silent = false })

@@ -14,7 +14,6 @@ vim.lsp.config('luals', {
 		},
 	},
 })
-
 vim.lsp.enable('luals')
 
 --zls config
@@ -39,8 +38,8 @@ vim.lsp.config['zls'] = {
 
 			-- omit the following line if `zig` is in your PATH
 			enable_build_on_save = true,
-			build_on_save_args = { "-fincremental" },
-			zig_exe_path = '/usr/bin/zig'
+			build_on_save_args = {},
+			-- build_on_save_args = { "-fincremental" }, -- removed: causes crash with zflecs C lib dependency in ZLS build runner
 		}
 	},
 }
@@ -114,3 +113,38 @@ vim.api.nvim_create_autocmd({ 'BufEnter' }, {
 		vim.bo.filetype = 'cs'
 	end,
 })
+
+vim.pack.add({ 'https://github.com/mrcjkb/rustaceanvim' })
+vim.g.rustaceanvim = {
+  server = {
+    default_settings = {
+      ['rust-analyzer'] = {
+        cargo = {
+          allFeatures = true,
+          buildScripts = { enable = true },
+        },
+        check = {
+          command = 'clippy',
+        },
+        procMacro = {
+          enable = true,
+        },
+        inlayHints = {
+          bindingModeHints = { enable = true },
+          closureCaptureHints = { enable = true },
+          closureReturnTypeHints = { enable = 'always' },
+          maxLength = 100,
+        },
+      },
+    },
+    on_attach = function(client, bufnr)
+      -- Rust-specific keymaps can go here
+    end,
+  },
+  tools = {
+    -- rustaceanvim-specific tool settings
+  },
+  dap = {
+    -- Debug adapter configuration (CodeLLDB)
+  },
+}

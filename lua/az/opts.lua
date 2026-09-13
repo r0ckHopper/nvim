@@ -7,8 +7,10 @@ vim.opt.signcolumn = "yes"
 vim.opt.wrap = false
 vim.opt.splitbelow = true
 vim.opt.splitright = true
-vim.opt.scrolloff = 8
+vim.opt.scrolloff = 99
 vim.opt.sidescrolloff = 8
+vim.opt.exrc = true
+vim.opt.secure = true
 
 --absolute + relative works well but breaks terminal
 --vim.opt.statuscolumn = "%s%{v:lnum} %{v:relnum}"
