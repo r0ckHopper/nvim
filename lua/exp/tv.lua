@@ -3,6 +3,9 @@ vim.pack.add({
 })
 local tv = require('tv')
 tv.setup({
+	global_keybindings = {
+		channels = '<leader><leader>tv', --default leader tv conflicts with floating window leader t
+	},
 	channels = {
 		files = {
 			keybinding = 'tv',
