@@ -1,6 +1,6 @@
 require('az.dap.dap')
 require('az.dap.dap-highlights')
-require('az.dap.dotnet')
+--require('az.dap.dotnet')
 
 -- Apply dapui config LAST so dotnet-debug doesn't override it
 require("dapui").setup({
