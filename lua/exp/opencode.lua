@@ -1,8 +1,7 @@
 -- edit popup test v2
 vim.pack.add({
---	"https://github.com/nickjvandyke/opencode.nvim",
+	"https://github.com/r0ckHopper/opencode.nvim",
 	"https://github.com/folke/snacks.nvim",
-	"file:///home/akhursheed/source/opencode.nvim"
 })
 --
 require("snacks").setup({
