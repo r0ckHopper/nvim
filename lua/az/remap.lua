@@ -74,7 +74,7 @@ map("n", "<leader>v", ":vsplit ", { desc = "vertical split" })
 --map('n', '<leader>r', ':.w !bash<CR>', { silent = false })
 
 --Ctrl S to save in both normal and insert mode
-map({'n', 'i'}, '<C-S>', '<Cmd>w<CR>' )
+map({'n', 'i'}, '<C-S>', '<Cmd>w<CR><Esc>' )
 
 
 vim.api.nvim_create_user_command("Wrap", function()
