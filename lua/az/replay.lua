@@ -55,14 +55,55 @@ function M.pick()
 		return
 	end
 
+	local function delete_replay(picker)
+		local entry = picker:current()
+		local replay = entry and entry.item
+		if not replay then
+			return
+		end
+
+		local path = vim.fs.joinpath(vim.fn.getcwd(), replay.rel)
+
+		-- dd deletes immediately; no confirmation prompt.
+		if vim.fn.delete(path) ~= 0 then
+			vim.notify("Failed to delete " .. replay.name, vim.log.levels.ERROR)
+			return
+		end
+
+		for i, item in ipairs(items) do
+			if item == replay then
+				table.remove(items, i)
+				break
+			end
+		end
+
+		if #items == 0 then
+			picker:close()
+		else
+			picker:find()
+		end
+	end
+
 	vim.ui.select(items, {
 		prompt = "Replay",
 		format_item = function(item)
 			return item.name
 		end,
-		-- Start focused on the list so j/k move immediately.
-		-- Press i to focus the filter input.
-		snacks = { focus = "list" },
+		snacks = {
+			-- Start focused on the list so j/k and dd work immediately.
+			-- Press i to focus the filter input.
+			focus = "list",
+			actions = {
+				delete_replay = delete_replay,
+			},
+			win = {
+				list = {
+					keys = {
+						["dd"] = "delete_replay",
+					},
+				},
+			},
+		},
 	}, function(item)
 		if item then
 			run_replay(item.rel)
