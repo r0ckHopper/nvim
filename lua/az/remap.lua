@@ -76,6 +76,8 @@ map("n", "<leader>v", ":vsplit ", { desc = "vertical split" })
 --Ctrl S to save in both normal and insert mode
 map({'n', 'i'}, '<C-S>', '<Cmd>w<CR><Esc>' )
 
+-- Ctrl l to move cursor right in insertmode
+map({'i'}, '<C-l>', function() vim.api.nvim_feedkeys(vim.keycode("<Right>"), "ni", false) end)
 
 vim.api.nvim_create_user_command("Wrap", function()
   vim.opt_local.wrap = not vim.opt_local.wrap:get()

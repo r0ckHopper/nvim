@@ -56,7 +56,7 @@ vim.g.opencode_opts = {
 --end)
 -- 
 vim.keymap.set({ "n", "v", "i" }, "<C-h>", function() require("opencode.events.permissions.floating").move_left() end, { desc = "Permission: select left" })
-vim.keymap.set({ "n", "v", "i" }, "<C-l>", function() require("opencode.events.permissions.floating").move_right() end, { desc = "Permission: select right" })
+--vim.keymap.set({ "n", "v", "i" }, "<C-l>", function() require("opencode.events.permissions.floating").move_right() end, { desc = "Permission: select right" })
 vim.keymap.set({ "n", "v", "i" }, "<C-n>", function() require("opencode.events.permissions.floating").next_permission() end, { desc = "Permission: next request" })
 vim.keymap.set({ "n", "v", "i" }, "<C-p>", function() require("opencode.events.permissions.floating").prev_permission() end, { desc = "Permission: prev request" })
 vim.keymap.set("n", "<C-CR>", function() require("opencode.events.permissions.floating").confirm() end, { desc = "Permission: confirm" })
