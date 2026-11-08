@@ -35,7 +35,7 @@ local function zig_build()
 end
 
 local function zig_rebuild()
-	vim.cmd("FloatermNew --position=bottomright --width=0.5 --height=0.3 --autoclose=0 rm -rf ./zig-out && zig build -Doptimize=Debug")
+	vim.cmd("FloatermNew --position=bottomright --width=0.5 --height=0.3 --autoclose=0 rm -rf ./zig* && zig build -Doptimize=Debug")
 	vim.schedule(function()
 		vim.api.nvim_feedkeys(
 			vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, true, true),
@@ -46,7 +46,7 @@ local function zig_rebuild()
 end
 
 local function zig_clean_rebuild()
-	vim.cmd("FloatermNew --position=bottomright --width=0.5 --height=0.3 --autoclose=0 rm -rf zig-out && rm -rf .zig-cache && zig build -Doptimize=Debug")
+	vim.cmd("FloatermNew --position=bottomright --width=0.5 --height=0.3 --autoclose=0 rm -rf zig* && rm -rf .zig* && zig build -Doptimize=Debug")
 	vim.schedule(function()
 		vim.api.nvim_feedkeys(
 			vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, true, true),
