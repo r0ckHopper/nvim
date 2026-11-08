@@ -42,7 +42,7 @@ local function run_replay(rel)
 
 	vim.schedule(function()
 		vim.api.nvim_feedkeys(
-			vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, true, true),
+			vim.api.nvim_replace_termcodes("<C-\\><C-n><C-w>w", true, true, true),
 			"n",
 			false
 		)
