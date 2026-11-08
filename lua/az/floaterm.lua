@@ -12,3 +12,13 @@ vim.keymap.set("n", "<leader>r", function()
   local line = vim.api.nvim_get_current_line():gsub("%%", "\\%%")
   vim.cmd("FloatermNew! " .. line)
 end)
+
+vim.keymap.set("v", "<leader>r", function()
+  vim.cmd("normal! y")
+  local sel = vim.fn.getreg('"')
+  sel = sel:gsub("\n+$", "")
+  if sel == "" then return end
+  local script = vim.fn.tempname() .. ".sh"
+  vim.fn.writefile(vim.split(sel, "\n", { plain = true }), script)
+  vim.cmd("FloatermNew! bash " .. vim.fn.fnameescape(script))
+end)
