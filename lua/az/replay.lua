@@ -55,6 +55,17 @@ function M.pick()
 		return
 	end
 
+	local function copy_replay(picker)
+		local entry = picker:current()
+		local replay = entry and entry.item
+		if not replay then
+			return
+		end
+
+		vim.fn.setreg("+", replay.name)
+		vim.notify("Copied " .. replay.name, vim.log.levels.INFO)
+	end
+
 	local function delete_replay(picker)
 		local entry = picker:current()
 		local replay = entry and entry.item
@@ -94,11 +105,13 @@ function M.pick()
 			-- Press i to focus the filter input.
 			focus = "list",
 			actions = {
+				copy_replay = copy_replay,
 				delete_replay = delete_replay,
 			},
 			win = {
 				list = {
 					keys = {
+						["yy"] = "copy_replay",
 						["dd"] = "delete_replay",
 					},
 				},
