@@ -2,21 +2,21 @@ local M = {}
 
 local EXE = "./zig-out/bin/c"
 
-local items = {
-	{ label = "--particles-only", flag = "--particles-only" },
-	{ label = "--replay", replay = true },
-	{ label = "--debug-emit", flag = "--debug-emit" },
-}
-
-local function run_flag(flag)
+local function run(args)
 	local root = vim.fn.getcwd()
-	local cmd = ("cd %s && %s %s"):format(
+	local parts = { EXE }
+	for _, arg in ipairs(args) do
+		parts[#parts + 1] = vim.fn.shellescape(arg)
+	end
+
+	local cmd = ("cd %s && %s"):format(
 		vim.fn.shellescape(root),
-		EXE,
-		flag
+		table.concat(parts, " ")
 	)
 
-	vim.cmd("FloatermNew --position=bottomright --width=0.5 --height=0.3 --autoclose=0 " .. cmd)
+	vim.cmd(
+		"FloatermNew --position=bottomright --width=0.5 --height=0.3 --autoclose=0 " .. cmd
+	)
 
 	vim.schedule(function()
 		vim.api.nvim_feedkeys(
@@ -28,24 +28,9 @@ local function run_flag(flag)
 end
 
 function M.pick()
-	vim.ui.select(items, {
-		prompt = "Run",
-		format_item = function(item)
-			return item.label
-		end,
-		snacks = {
-			-- Start focused on the list so j/k work immediately.
-			focus = "list",
-		},
-	}, function(item)
-		if not item then
-			return
-		end
-
-		if item.replay then
-			require("az.replay").pick()
-		else
-			run_flag(item.flag)
+	require("az.args").pick({}, function(args)
+		if args then
+			run(args)
 		end
 	end)
 end

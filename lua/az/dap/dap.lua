@@ -28,7 +28,7 @@ vim.keymap.set('n', '<F11>', function() dap.step_into() end, { desc = 'Step Into
 vim.keymap.set('n', '<leader>xi', function() dap.step_into() end, { desc = 'Step Into' })
 vim.keymap.set('n', '<F12>', function() dap.step_out() end, { desc = 'Step Out' })
 vim.keymap.set('n', '<leader>xo', function() dap.step_out() end, { desc = 'Step Out' })
-vim.keymap.set('n', '<F10>', function() dap.step_over() end, { desc = 'Step Over' })
+vim.keymap.set('n', '<F1>', function() dap.step_over() end, { desc = 'Step Over' })
 vim.keymap.set('n', '<leader>xO', function() dap.step_over() end, { desc = 'Step Over' })
 -- Stack navigation
 vim.keymap.set('n', '<leader>xj', function() dap.down() end, { desc = 'Down' })
@@ -90,26 +90,45 @@ dap.adapters.lldb = {
 --  args = { '--interpreter=dap', '--eval-command', 'set print pretty on' }
 --}
 
+local zig_program = function()
+	local cwd = vim.fn.getcwd()
+	local exe_path = cwd .. '/zig-out/bin/c'
+
+	if vim.fn.executable(exe_path) == 0 then
+		print('Warning: Executable not found at ' .. exe_path)
+		print('Please build first: zig build -Doptimize=Debug')
+	end
+	return exe_path
+end
+
+-- Async config value: nvim-dap resumes this coroutine with the picked args.
+local function pick_zig_args()
+	return coroutine.create(function(dap_run_co)
+		require("az.args").pick({ custom = true }, function(args)
+			coroutine.resume(dap_run_co, args or dap.ABORT)
+		end)
+	end)
+end
+
 -- Zig configuration (applies to any file in a Zig project)
 local zig_config = {
 	{
 		name = 'Launch Zig Project',
 		type = 'lldb',
 		request = 'launch',
-		program = function()
-			local cwd = vim.fn.getcwd()
-			local project_name = vim.fn.fnamemodify(cwd, ':t')
-			local exe_path = cwd .. '/zig-out/bin/' .. project_name
-
-			if vim.fn.executable(exe_path) == 0 then
-				print('Warning: Executable not found at ' .. exe_path)
-				print('Please build first: zig build -Doptimize=Debug')
-			end
-			return exe_path
-		end,
+		program = zig_program,
 		cwd = '${workspaceFolder}',
 		stopOnEntry = false,
 		args = {},
+	},
+	{
+		name = 'Launch Zig Project (with args)',
+		type = 'lldb',
+		request = 'launch',
+		program = zig_program,
+		cwd = '${workspaceFolder}',
+		stopOnEntry = false,
+		args = pick_zig_args,
 	},
 }
 local dotnet_config = {

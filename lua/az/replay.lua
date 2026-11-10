@@ -2,7 +2,7 @@ local M = {}
 
 local EXE = "./zig-out/bin/c"
 
-local function list_replays()
+function M.list()
 	local dir = vim.fn.getcwd() .. "/replays"
 
 	if vim.fn.isdirectory(dir) == 0 then
@@ -49,9 +49,12 @@ local function run_replay(rel)
 	end)
 end
 
-function M.pick()
-	local items = list_replays()
+-- Opens the replay picker and calls cb with the selected replay entry,
+-- or nil if the user cancels.
+function M.select(cb)
+	local items = M.list()
 	if #items == 0 then
+		cb(nil)
 		return
 	end
 
@@ -101,7 +104,7 @@ function M.pick()
 			return item.name
 		end,
 		snacks = {
-			-- Start focused on the list so j/k and dd work immediately.
+			-- Start focused on the list so j/k and yy/dd work immediately.
 			-- Press i to focus the filter input.
 			focus = "list",
 			actions = {
@@ -118,6 +121,12 @@ function M.pick()
 			},
 		},
 	}, function(item)
+		cb(item)
+	end)
+end
+
+function M.pick()
+	M.select(function(item)
 		if item then
 			run_replay(item.rel)
 		end
