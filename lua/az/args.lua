@@ -1,7 +1,8 @@
 local M = {}
 
 local base_items = {
-	{ label = "--particle-only", args = { "--particle-only" } },
+	{ label = "none", args = {}},
+	{ label = "--particles-only", args = { "--particles-only" } },
 	{ label = "--replay", replay = true },
 	{ label = "--debug-emit", args = { "--debug-emit" } },
 }
