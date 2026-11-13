@@ -49,10 +49,6 @@ local prefixes = {
 }
 
 function M.setup()
-	-- Do not lower 'timeoutlen' here. The paste lhs sequences are complete
-	-- two-key mappings, so they resolve as soon as the second key arrives.
-	-- 'timeoutlen' is global and also controls how long <Leader> waits, so
-	-- lowering it would shorten the leader timeout for everything else.
 	vim.o.timeout = true
 
 	for _, prefix in ipairs(prefixes) do
